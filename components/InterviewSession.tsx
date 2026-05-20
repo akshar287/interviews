@@ -8,7 +8,7 @@ import TranscriptBox from "./TranscriptBox";
 import ProctorOverlay from "./ProctorOverlay";
 import { InterviewState } from "@/lib/interviewStateMachine";
 import { initSpeechProcessing, speakText, startListening, stopListening, stopSpeaking } from "@/lib/speechEngine";
-import { generateNextQuestion, generateFinalEvaluation } from "@/lib/geminiClient";
+import { generateNextQuestion, generateFinalEvaluation } from "@/lib/aiClient";
 import { saveInterviewSession, deductTokens, TOKENS_PER_INTERVIEW } from "@/lib/firestore";
 import { auth } from "@/lib/firebase";
 
@@ -24,6 +24,7 @@ export default function InterviewSession({ role, type }: Props) {
   const [currentAIQuestion, setCurrentAIQuestion] = useState<string>("Hello! Are you ready to begin the interview?");
   const [scores, setScores] = useState<number[]>([]);
   const [liveText, setLiveText] = useState("");
+  const [isLoadingVoice, setIsLoadingVoice] = useState(true);
   const liveTextRef = useRef("");
 
   const questionCountRef = useRef(0);
@@ -36,7 +37,12 @@ export default function InterviewSession({ role, type }: Props) {
       elem.requestFullscreen().catch((err) => console.log("Fullscreen denied", err));
     }
 
-    initSpeechProcessing();
+    initSpeechProcessing().then(() => {
+      setIsLoadingVoice(false);
+    }).catch(err => {
+      console.error("Failed to init voice", err);
+      setIsLoadingVoice(false);
+    });
 
     return () => {
       stopSpeaking();
@@ -213,12 +219,18 @@ export default function InterviewSession({ role, type }: Props) {
             <p className="text-gray-400 mb-8 max-w-md mx-auto font-mono text-sm">
               Ensure your camera and microphone are permitted. Make sure you are in a quiet room.
             </p>
-            <button
-              onClick={handleStart}
-              className="px-8 py-4 bg-accent text-black font-bold text-xl rounded-full hover:scale-105 transition-transform shadow-[0_0_20px_rgba(0,229,204,0.5)]"
-            >
-              Begin Session
-            </button>
+            {isLoadingVoice ? (
+              <button disabled className="px-8 py-4 bg-gray-500 text-gray-300 font-bold text-xl rounded-full opacity-70 cursor-not-allowed">
+                Downloading Voice Model...
+              </button>
+            ) : (
+              <button
+                onClick={handleStart}
+                className="px-8 py-4 bg-accent text-black font-bold text-xl rounded-full hover:scale-105 transition-transform shadow-[0_0_20px_rgba(0,229,204,0.5)]"
+              >
+                Begin Session
+              </button>
+            )}
           </div>
         </div>
       )}

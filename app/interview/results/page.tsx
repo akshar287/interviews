@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import ResultsDashboard from "@/components/ResultsDashboard";
-import { FinalEvaluationResponse } from "@/lib/geminiClient";
+import { FinalEvaluationResponse } from "@/lib/aiClient";
 
 export default function ResultsPage() {
   const [results, setResults] = useState<FinalEvaluationResponse | null>(null);

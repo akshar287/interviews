@@ -1,13 +1,12 @@
 let recognition: any = null;
-let synthesis: SpeechSynthesis | null = null;
 let silenceTimer: NodeJS.Timeout | null = null;
+let currentUtterance: SpeechSynthesisUtterance | null = null;
 
-export const initSpeechProcessing = () => {
+export const initSpeechProcessing = async () => {
   if (typeof window !== "undefined") {
-    synthesis = window.speechSynthesis;
-
+    // Setup Recognition
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (SpeechRecognition) {
+    if (SpeechRecognition && !recognition) {
       recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
@@ -16,25 +15,48 @@ export const initSpeechProcessing = () => {
   }
 };
 
-export const speakText = (text: string, onEndCallback: () => void) => {
-  if (!synthesis) return;
-  synthesis.cancel(); // Stop any current speech
-  
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.pitch = 1.1;
-  utterance.rate = 1.0;
-  
-  utterance.onend = () => {
+export const speakText = async (text: string, onEndCallback: () => void) => {
+  if (typeof window === "undefined" || !window.speechSynthesis) {
     onEndCallback();
-  };
+    return;
+  }
   
-  synthesis.speak(utterance);
+  stopSpeaking(); // Stop any current speech
+  
+  try {
+    currentUtterance = new SpeechSynthesisUtterance(text);
+    currentUtterance.lang = "en-US";
+    
+    // Attempt to select a better voice
+    const voices = window.speechSynthesis.getVoices();
+    const femaleVoice = voices.find(v => v.name.includes("Google") || v.name.includes("Female") || v.name.includes("Zira"));
+    if (femaleVoice) {
+      currentUtterance.voice = femaleVoice;
+    }
+
+    currentUtterance.onend = () => {
+      currentUtterance = null;
+      onEndCallback();
+    };
+    
+    currentUtterance.onerror = (event) => {
+      console.error("Text-to-speech error:", event);
+      currentUtterance = null;
+      onEndCallback(); 
+    };
+
+    window.speechSynthesis.speak(currentUtterance);
+  } catch (error) {
+    console.error("Text-to-speech setup error:", error);
+    onEndCallback(); 
+  }
 };
 
 export const stopSpeaking = () => {
-  if (synthesis) {
-    synthesis.cancel();
+  if (typeof window !== "undefined" && window.speechSynthesis) {
+    window.speechSynthesis.cancel();
   }
+  currentUtterance = null;
 };
 
 export const startListening = (

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function InterviewSetup({ tokens }: { tokens: number }) {
   const router = useRouter();
@@ -17,9 +19,26 @@ export default function InterviewSetup({ tokens }: { tokens: number }) {
     router.push(`/interview/session?${searchParams.toString()}`);
   };
 
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      router.push("/");
+    } catch (error) {
+      console.error("Failed to sign out", error);
+    }
+  };
+
   return (
     <div className="max-w-md w-full bg-white/5 border border-white/10 rounded-xl p-8 backdrop-blur-md">
-      <h2 className="text-3xl font-heading font-bold text-white mb-6">Configure Session</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-heading font-bold text-white">Configure Session</h2>
+        <button 
+          onClick={handleSignOut}
+          className="text-xs text-red-400 hover:text-red-300 font-mono transition-colors border border-red-500/30 hover:bg-red-500/10 px-3 py-1 rounded"
+        >
+          Sign Out
+        </button>
+      </div>
       
       <div className="space-y-4 mb-8">
         <div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { FinalEvaluationResponse } from "@/lib/geminiClient";
+import { FinalEvaluationResponse } from "@/lib/aiClient";
 import { useRouter } from "next/navigation";
 
 export default function ResultsDashboard({ results }: { results: FinalEvaluationResponse | null }) {
