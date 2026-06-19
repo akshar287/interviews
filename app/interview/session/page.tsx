@@ -4,6 +4,8 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import InterviewSession from "@/components/InterviewSession";
 
+export const dynamic = "force-dynamic";
+
 function SessionContent() {
   const searchParams = useSearchParams();
   const role = searchParams.get("role") || "Software Engineer";

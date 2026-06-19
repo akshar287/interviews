@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import ResultsDashboard from "@/components/ResultsDashboard";
 import { FinalEvaluationResponse } from "@/lib/aiClient";
 
+export const dynamic = "force-dynamic";
+
 export default function ResultsPage() {
   const [results, setResults] = useState<FinalEvaluationResponse | null>(null);
 

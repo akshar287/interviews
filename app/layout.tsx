@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import MatomoAnalytics from "@/components/MatomoAnalytics";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "AI Interviewer Pro",
   description: "Next-gen AI powered mock interview platform",

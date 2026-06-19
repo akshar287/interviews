@@ -6,6 +6,8 @@ import { auth } from "@/lib/firebase";
 import { getUserProfile } from "@/lib/firestore";
 import { useRouter } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default function SetupPage() {
   const router = useRouter();
   const [tokens, setTokens] = useState<number | null>(null);

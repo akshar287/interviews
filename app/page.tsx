@@ -6,6 +6,8 @@ import { auth, googleProvider } from "@/lib/firebase";
 import { getUserProfile, createUserProfile } from "@/lib/firestore";
 import { useRouter } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
