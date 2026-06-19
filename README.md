@@ -53,7 +53,13 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+
+# Matomo analytics configuration
+NEXT_PUBLIC_MATOMO_URL=https://your-matomo-instance.example
+NEXT_PUBLIC_MATOMO_SITE_ID=1
 ```
+
+If you deploy on Vercel, add the same two Matomo variables in the project environment settings so production builds can embed the tracker URL and site ID.
 
 ### 4. Firestore Security Rules
 Make sure your Firestore Database rules allow users to access their own data. In your Firebase Console, apply these rules:

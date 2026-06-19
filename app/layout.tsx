@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import MatomoAnalytics from "@/components/MatomoAnalytics";
 
 export const metadata: Metadata = {
   title: "AI Interviewer Pro",
@@ -14,6 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased min-h-screen">
+        <MatomoAnalytics />
         {children}
       </body>
     </html>
